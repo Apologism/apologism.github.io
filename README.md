@@ -1,1 +1,0 @@
-# apologism.github.io

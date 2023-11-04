@@ -9,11 +9,11 @@
     <lastBuildDate>Tue, 31 Oct 2023 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://apologism.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Tiny Manual Mapper Introduction</title>
-      <link>https://apologism.github.io/post/syntax/</link>
+      <title>Tiny Mapper: Part One</title>
+      <link>https://apologism.github.io/post/tiny-mapper-1/</link>
       <pubDate>Tue, 31 Oct 2023 00:00:00 +0000</pubDate>
-      <guid>https://apologism.github.io/post/syntax/</guid>
-      <description>OAWHOAWH To create a heading, add number signs (#) in front of a word or phrase. The number of number signs you use should correspond to the heading level. For example, to create a heading level three (h3), use three number signs (e.g., ### My Header). Heading level 1 Heading level 2 Heading level 3 Heading level 4 Heading level 5 Heading level 6 </description>
+      <guid>https://apologism.github.io/post/tiny-mapper-1/</guid>
+      <description>Introduction Welcome, everyone, to part one of a series of blog posts about creating a tiny manual mapper. Our goal by the end of the series is to use our knowledge of PE (Portable Executable) files, and their relationship with the Windows loader, to create a basic DLL (Dynamic-Link Library) manual mapper in modern C. I expect readers to be somewhat experienced with the basics of C programming, and the Windows API.</description>
     </item>
   </channel>
 </rss>
