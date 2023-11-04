@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<title>Tiny Mapper: Part One - Apologism</title>
+<meta name="description" content="Introduction to my blog series on creating a tiny DLL manual mapper in modern C.">
+
+<meta name="author" content="Andrew"><script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "WebSite",
+    "name": "Apologism",
+    
+    "url": "https:\/\/apologism.github.io\/"
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "name": "",
+  "url": "https:\/\/apologism.github.io\/"
+  
+  
+  
+  
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@id": "https:\/\/apologism.github.io\/",
+          "name": "home"
+        }
+    },{
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@id": "https:\/\/apologism.github.io\/post\/tiny-mapper-1\/",
+          "name": "Tiny mapper part one"
+        }
+    }]
+}
+</script><script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "author": {
+    "name" : "Andrew"
+  },
+  "headline": "Tiny Mapper: Part One",
+  "description" : "Introduction to my blog series on creating a tiny DLL manual mapper in modern C.",
+  "inLanguage" : "en",
+  "wordCount":  885 ,
+  "datePublished" : "2023-10-31T00:00:00",
+  "dateModified" : "2023-10-31T00:00:00",
+  "image" : "https:\/\/apologism.github.io\/",
+  "keywords" : [ "tinymapper, C, windows" ],
+  "mainEntityOfPage" : "https:\/\/apologism.github.io\/post\/tiny-mapper-1\/",
+  "publisher" : {
+    "@type": "Organization",
+    "name" : "https:\/\/apologism.github.io\/",
+    "logo" : {
+        "@type" : "ImageObject",
+        "url" : "https:\/\/apologism.github.io\/",
+        "height" :  60 ,
+        "width" :  60
+    }
+  }
+}
+</script>
+
+<meta property="og:image" content="https://apologism.github.io/img/posts/tm1.jpg">
+<meta property="og:url" content="https://apologism.github.io/post/tiny-mapper-1/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Apologism">
+   
+<link rel="apple-touch-icon" sizes="180x180" href=" https://apologism.github.io/favicon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://apologism.github.io/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="https://apologism.github.io/favicon/favicon-16x16.png">
+
+
+<meta name="generator" content="Hugo 0.120.1"><link rel="stylesheet" href="https://apologism.github.io/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://apologism.github.io/css/bootstrap-icons/bootstrap-icons.css">
+<link rel="stylesheet" href="https://apologism.github.io/css/main.css">
+<link disabled id="dark-mode-theme" rel="stylesheet" href="https://apologism.github.io/css/dark.css">
+<link rel="stylesheet" href="https://apologism.github.io/css/highlight.min.css"><link rel="stylesheet" href="https://apologism.github.io/css/codeblock.css">
+
+
+
+
+
+
+
+  </head>
+  <body>
+    
+<div class="container fixed-top">
+  <div class="row justify-content-center">
+    <div class="col-sm-12 col-md-12 col-lg-10 col-xl-10">
+
+      <nav class="navbar navbar-expand-lg navbar-light fixed-top p-0">
+        <div class="container">
+          
+          <a class="navbar-brand fw-bold" href="https://apologism.github.io/">Apologism</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav mb-2 mb-lg-0">
+              
+              
+
+              <li class="nav-item">
+
+                
+                
+                
+                
+                
+
+                <a class="nav-link " title="Home"
+                  href="/"> Home</a>
+              </li>
+
+              
+              
+              
+
+              <li class="nav-item">
+
+                
+                
+                
+                
+                
+
+                <a class="nav-link " title="About"
+                  href="/about/"> About</a>
+              </li>
+
+              
+              
+
+              
+              <li class="nav-item nav-link">
+                <a id="dark-mode-toggle" class="bi bi-sun"></a>
+              </li>
+              
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+    </div>
+  </div>
+</div>
+    
+
+
+
+
+
+
+
+
+
+<header class="header-section ">
+
+  <div class="intro-header no-img mt-10">
+    <div class="container">
+      <div class="row justify-content-center">
+        
+        <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8">
+          
+
+          
+          <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            
+
+            <div class="post-heading">
+              
+
+              
+
+              
+              <h1 class="fw-semibold display-5 lh-1 mb-3"> 
+                Tiny Mapper: Part One
+                
+              </h1>
+              
+              
+
+              
+
+              
+              
+              <span class="post-meta">
+  
+  
+  &nbsp;October 31 2023 
+
+  
+    &nbsp;|&nbsp;<i class="fas fa-clock"></i>&nbsp;5&nbsp;minutes
+  
+
+  
+    &nbsp;|&nbsp;<i class="fas fa-book"></i>&nbsp;885&nbsp;words
+  
+  
+  
+</span>
+
+
+              
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+    
+<div class="container" role="main">
+  <div class="row">
+    <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 ">
+
+      <div class="card-image card-image-blog p-0">
+        
+        <img src="/img/posts/tm1.jpg" alt="Tiny Mapper: Part One" class="rounded img-fluid">
+        
+        
+      </div>
+    </div>
+ 
+    <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 pt-4">
+      <article role="main" class="blog-post">
+        <h2 id="introduction">Introduction</h2>
+<p>Welcome, everyone, to part one of a series of blog posts about creating a tiny manual mapper. Our goal by the end of the series is to use our knowledge of PE (Portable Executable) files, and their relationship with the Windows loader, to create a basic DLL (Dynamic-Link Library) manual mapper in modern C. I expect readers to be somewhat experienced with the basics of C programming, and the Windows API.</p>
+<p> </p>
+<h2 id="overview">Overview</h2>
+<blockquote>
+<p>&ldquo;The essence of strategy is choosing what not to do.&rdquo; - Prof. Michael Porter</p>
+</blockquote>
+<p>Our objective is to create a <em>minimal</em> manual mapper, which means that the question we should be asking ourselves is: “What are the minimum steps required to map a DLL file from disk into a process?” While, admittedly, I’m not the foremost expert on the PE file format I would say that roughly the answer is as follows:</p>
+<ol>
+<li>
+<p>Map sections from the image on disk into memory.</p>
+</li>
+<li>
+<p>Relocate image base addresses.</p>
+</li>
+<li>
+<p>Fix image imports.</p>
+</li>
+</ol>
+<p>This isn’t the whole picture. There are indeed a few caveats. For example, there could exist an image that gets loaded at its <a href="https://learn.microsoft.com/en-us/windows/win32/debug/pe-format#optional-header-windows-specific-fields-image-only">preferred image address</a> and doesn’t have any imports that need to be resolved, in such a case two out of the three steps described would be pointless, or there could be an image that has thread local storage callbacks that need to be called, however, generally I would say these steps are sufficient enough for our purposes and I will later explain what we can do to add onto our mapper to extend its functionality. Additionally, I want to point out that a manual mapper has two phases: the <code>mapping phase</code>, and the <code>execution phase</code>. So far I&rsquo;ve only described the <code>mapping phase</code>. The <code>execution phase</code> is how we get the code we&rsquo;ve mapped in to actually run. If we didn&rsquo;t have this phase then we&rsquo;d just be writing a bunch of bytes to the <code>target</code> process for no reason<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>.</p>
+<p> </p>
+<h2 id="setup">Setup</h2>
+<p>The first thing on the agenda is to get the project set up. If you&rsquo;re following along with me then I&rsquo;ll have you know that I&rsquo;m using GCC from <a href="https://www.mingw-w64.org/">MingW</a>. The reason I&rsquo;m opting for GCC over MSVC for this project is that it currently has more support for <a href="https://en.cppreference.com/w/c/23">C23</a> features. I&rsquo;m also using Clion as my IDE of choice for this project, but rest assured anything will work fine here. Finally, I would like to mention that the entire source code for this project is hosted on my <a href="https://github.com/Apologism/tinymapper/tree/main">Github 🌟</a>.</p>
+<p> </p>
+<h2 id="a-new-file">A New File</h2>
+<blockquote>
+<p>main.c</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>() {
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold">return</span> <span style="color:#099">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>As you can see we don&rsquo;t have any useful code yet, fear not, that will change soon. But, until then, we have another question to ask ourselves: &ldquo;We need to map our DLL into an already existing process, but how can we access that process?&rdquo;. Well, my dearest reader, the answer to that question is to get a <strong>handle</strong> to the <code>target</code> process. You can think of a <a href="https://learn.microsoft.com/en-us/windows/win32/sysinfo/handles-and-objects">handle</a> as a key that lets you interface with Windows objects, like processes, for example! We need a handle because if we didn&rsquo;t we wouldn&rsquo;t be able to read, write, change protection of memory regions, or do <em>really</em> anything to an external process.</p>
+<blockquote>
+<p>process.h</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#999;font-weight:bold">#ifndef TINYMAPPER_PROCESS_H
+</span></span></span><span style="display:flex;"><span><span style="color:#999;font-weight:bold">#define TINYMAPPER_PROCESS_H
+</span></span></span><span style="display:flex;"><span><span style="color:#999;font-weight:bold"></span>
+</span></span><span style="display:flex;"><span><span style="color:#999;font-weight:bold">#include</span> <span style="color:#999;font-weight:bold">&lt;Windows.h&gt;</span><span style="color:#999;font-weight:bold">
+</span></span></span><span style="display:flex;"><span><span style="color:#999;font-weight:bold">#include</span> <span style="color:#999;font-weight:bold">&lt;tlhelp32.h&gt;</span><span style="color:#999;font-weight:bold">
+</span></span></span><span style="display:flex;"><span><span style="color:#999;font-weight:bold">#include</span> <span style="color:#999;font-weight:bold">&lt;stdint.h&gt;</span><span style="color:#999;font-weight:bold">
+</span></span></span><span style="display:flex;"><span><span style="color:#999;font-weight:bold">#include</span> <span style="color:#999;font-weight:bold">&lt;stdio.h&gt;</span><span style="color:#999;font-weight:bold">
+</span></span></span><span style="display:flex;"><span><span style="color:#999;font-weight:bold"></span>
+</span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">/// Finds a process with the filename that matches `ident`, then opens that process with permissions `perms`.
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">///
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">/// Note: as of right now numeric identifiers are not supported.
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic">/// If it doesn&#39;t find the handle it will return an invalid handle value.
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span><span style="font-weight:bold">static</span> HANDLE <span style="color:#900;font-weight:bold">acquire_process_handle</span>(<span style="font-weight:bold">const</span> <span style="color:#458;font-weight:bold">char</span><span style="font-weight:bold">*</span> ident, <span style="color:#458;font-weight:bold">uint32_t</span> perms) {
+</span></span><span style="display:flex;"><span>    <span style="color:#998;font-style:italic">// pointer to list of processes.
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>    HANDLE process_list <span style="font-weight:bold">=</span> <span style="color:#900;font-weight:bold">CreateToolhelp32Snapshot</span>(TH32CS_SNAPPROCESS, <span style="color:#099">0</span>);
+</span></span><span style="display:flex;"><span>    <span style="color:#998;font-style:italic">// process entry struct where we&#39;ll be filling in the information.
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>    PROCESSENTRY32 process_info <span style="font-weight:bold">=</span> { .dwSize <span style="font-weight:bold">=</span> <span style="font-weight:bold">sizeof</span>(PROCESSENTRY32) };
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold">if</span> (process_list <span style="font-weight:bold">==</span> INVALID_HANDLE_VALUE) {
+</span></span><span style="display:flex;"><span>        <span style="color:#900;font-weight:bold">puts</span>(<span style="color:#b84">&#34;Error: couldn&#39;t get handle to process list.&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="font-weight:bold">return</span> INVALID_HANDLE_VALUE;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#998;font-style:italic">// get the first process and store it into `process_info`.
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>    <span style="font-weight:bold">if</span> (<span style="font-weight:bold">!</span><span style="color:#900;font-weight:bold">Process32First</span>(process_list, <span style="font-weight:bold">&amp;</span>process_info)) {
+</span></span><span style="display:flex;"><span>        <span style="color:#900;font-weight:bold">puts</span>(<span style="color:#b84">&#34;Error: couldn&#39;t get handle to first process.&#34;</span>);
+</span></span><span style="display:flex;"><span>        <span style="font-weight:bold">return</span> INVALID_HANDLE_VALUE;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold">do</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#998;font-style:italic">// check to see if process name is the same as `ident`.
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>        <span style="font-weight:bold">if</span> (<span style="color:#900;font-weight:bold">strcmp</span>(ident, process_info.szExeFile) <span style="font-weight:bold">==</span> <span style="color:#099">0</span>) {
+</span></span><span style="display:flex;"><span>            <span style="color:#998;font-style:italic">// Open a handle to the target process.
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>            <span style="font-weight:bold">return</span> <span style="color:#900;font-weight:bold">OpenProcess</span>(perms, FALSE, process_info.th32ProcessID);
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#998;font-style:italic">// iterate through the entire process list.
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>    } <span style="font-weight:bold">while</span> (<span style="color:#900;font-weight:bold">Process32Next</span>(process_list, <span style="font-weight:bold">&amp;</span>process_info));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#998;font-style:italic">// we went through the entire process list and couldn&#39;t find the target exe name.
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>    <span style="font-weight:bold">return</span> INVALID_HANDLE_VALUE;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#999;font-weight:bold">#endif </span><span style="color:#998;font-style:italic">//TINYMAPPER_PROCESS_H
+</span></span></span></code></pre></div><p>The <code>acquire_process_handle</code> function takes a snapshot of all running processes, then goes through the list and compares the file name of the process with our desired <code>target</code>&rsquo;s name. Once it finds the <code>target</code> it gets a handle to the target process with permissions defined by the user.</p>
+<blockquote>
+<p>main.c</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#999;font-weight:bold">#include</span> <span style="color:#999;font-weight:bold">&#34;process.h&#34;</span><span style="color:#999;font-weight:bold">
+</span></span></span><span style="display:flex;"><span><span style="color:#999;font-weight:bold"></span>
+</span></span><span style="display:flex;"><span><span style="color:#458;font-weight:bold">int</span> <span style="color:#900;font-weight:bold">main</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#998;font-style:italic">// get a handle to the target process.
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>    HANDLE process <span style="font-weight:bold">=</span> <span style="color:#900;font-weight:bold">acquire_process_handle</span>(<span style="color:#b84">&#34;test.exe&#34;</span>, PROCESS_ALL_ACCESS);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold">if</span> (process <span style="font-weight:bold">==</span> INVALID_HANDLE_VALUE) {
+</span></span><span style="display:flex;"><span>        <span style="color:#900;font-weight:bold">puts</span>(<span style="color:#b84">&#34;error: failed to get a handle to the target process.&#34;</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#998;font-style:italic">// close the handle to the target process, since we&#39;re done using it.
+</span></span></span><span style="display:flex;"><span><span style="color:#998;font-style:italic"></span>    <span style="color:#900;font-weight:bold">CloseHandle</span>(process);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="font-weight:bold">return</span> <span style="color:#099">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>This is our updated <code>main.c</code> complete with our helper function.
+Now we&rsquo;re ready to start the mapping phase! That&rsquo;ll be covered in the next article. Thanks for reading!</p>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p>This isn&rsquo;t always the case. Sometimes we map images in just to use them as dependencies for other images, which don&rsquo;t necessarily get executed.&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+
+      </article>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1">
+      <hr />
+    </div>
+    <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 pt-2">
+        
+          <div class="blog-tags">
+            
+              <a href="https://apologism.github.io//tags/tinymapper/">tinymapper</a>
+            
+              <a href="https://apologism.github.io//tags/c/">C</a>
+            
+              <a href="https://apologism.github.io//tags/windows/">windows</a>
+            
+          </div>
+        
+      </div>
+ 
+    <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 pt-4">
+      
+      <section id="social-share">
+        <div class="list-inline footer-links">
+          
+
+<div class="share-box" aria-hidden="true">
+  <div><p class="list-inline footer-links">Use the share button below if you liked it.</p></div>
+  <ul class="share">
+
+    
+    <li>
+      <a href="//www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fapologism.github.io%2fpost%2ftiny-mapper-1%2f" target="_blank" title="Share on Facebook">
+        <i class="bi bi-facebook facebook-color"></i>
+      </a>
+    </li>
+
+    
+    <li>
+      <a href="//twitter.com/share?url=https%3a%2f%2fapologism.github.io%2fpost%2ftiny-mapper-1%2f&amp;text=Tiny%20Mapper%3a%20Part%20One&amp;via=map%5bgithub%3aapologism%20linkedin%3areversing%20name%3aAndrew%20website%3ahttps%3a%2f%2fapologism.github.io%2f%5d"
+        target="_blank" title="Share on Twitter">
+        <i class="bi bi-twitter twitter-color"></i>
+      </a>
+    </li>
+
+    
+    <li>
+      <a href="//reddit.com/submit?url=https%3a%2f%2fapologism.github.io%2fpost%2ftiny-mapper-1%2f&amp;title=Tiny%20Mapper%3a%20Part%20One" target="_blank" title="Share on Reddit">
+        <i class="bi bi-reddit reddit-color"></i>
+      </a>
+    </li>
+
+    
+    <li>
+      <a href="whatsapp://send?text=https%3a%2f%2fapologism.github.io%2fpost%2ftiny-mapper-1%2f&amp;description=Tiny%20Mapper%3a%20Part%20One" target="_blank" rel="noopener"
+        title="Share on WhatsApp">
+        <i class="bi bi-whatsapp whatsapp-color"></i>
+      </a>
+    </li>
+
+
+    
+
+    
+
+    
+
+    
+    
+
+  </ul>
+</div>
+<p class="text-muted">It makes me smile, when I see it.</p>
+
+        </div>
+      </section>
+      
+    </div>
+
+    <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 mt-3">
+      <div class="card">
+        <div class="row no-gutters">
+          <div class="col-md-2 "> 
+            <div class="card-body ">
+            <img src="/img/author.jpg" class="img-responsive img-50 img-round" alt="">
+          </div>
+          </div>
+          <div class="col-md-10">
+            <div class="card-body p-1.1">
+
+              <p class="p-0 m-0"><small class="text-muted ">Written By</small></p>
+              <h5>
+                
+                
+                Andrew
+                
+                
+              </h5>
+              <p class="card-text fs-1"></p>
+            </div>
+          </div>
+        </div>
+
+      
+    </div>
+  </div>
+
+      <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 pt-4">
+        
+        <ul class="list-group list-group-horizontal" style="flex-direction: row">
+          
+
+
+          
+        </ul>
+        
+      </div>
+
+      <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 pt-4"> 
+      </div>
+    </div>
+  </div>
+
+  <div class="">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12 col-md-12 mt-3">
+          <h3>Read more</h3>
+          <hr />
+        </div>
+
+        
+        
+
+        
+        
+      </div>
+    </div>
+
+    
+
+  </div>
+</div>
+</div>
+
+    
+
+
+<footer>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <ul
+          class="list-inline list-group list-group-horizontal text-center footer-links d-flex justify-content-center flex-row">
+
+          
+          <li>
+            <a href="https://github.com/apologism" title="GitHub" target="_blank">
+              <span class="mx-2">
+                <i class="bi bi-github"></i>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a href="https://linkedin.com/in/reversing" title="LinkedIn" target="_blank">
+              <span class="mx-2">
+                <i class="bi bi-linkedin"></i>
+              </span>
+            </a>
+          </li>
+          
+        </ul>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <p class="credits copyright text-muted">
+          
+          
+          <a href="https://apologism.github.io/">Andrew</a>
+          
+          
+
+          &nbsp;&bull;&nbsp;&copy;
+          
+          2023
+          
+
+          
+          &nbsp;&bull;&nbsp;
+          <a href="https://apologism.github.io/">Apologism</a>
+          
+        </p>
+        
+        <p class="credits theme-by text-muted">
+          Powered by <a href="https://gohugo.io">Hugo</a> & <a href="https://github.com/binokochumolvarghese/lightbi-hugo">Lightbi.</a>&nbsp; Made with ❤ by <a href="https://binovarghese.com">Bino</a>
+          
+        </p>
+      </div>
+    </div>
+  </div>
+</footer><script src="https://apologism.github.io/js/jquery-3.7.0.slim.min.js"></script>
+<script src="https://apologism.github.io/js/bootstrap.min.js"></script>
+<script src="https://apologism.github.io/js/highlight.min.js"></script>
+<script> hljs.initHighlightingOnLoad(); </script>
+<script> $(document).ready(function () { $("pre.chroma").css("padding", "0"); }); </script><script src="https://apologism.github.io/js/dark-mode.js"></script>
+    
+  </body>
+</html>
+
